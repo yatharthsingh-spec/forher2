@@ -1,0 +1,165 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at top, #1a0b1f, #050510);
+  overflow: hidden;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* 🌌 CANVAS */
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* 💖 CARD */
+.book {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 235, 0.45),
+    rgba(255, 245, 250, 0.35)
+  );
+  backdrop-filter: blur(24px);
+  padding: 60px 70px;
+  border-radius: 36px;
+  text-align: center;
+  z-index: 2;
+  box-shadow:
+    0 0 90px rgba(255, 160, 200, 0.45),
+    inset 0 0 35px rgba(255, 255, 255, 0.35);
+  animation: pop 1.2s cubic-bezier(.68,-0.6,.32,1.6);
+}
+
+@keyframes pop {
+  from {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.book h1 {
+  font-size: 2.4rem;
+  color: #4a1234;
+  margin-bottom: 12px;
+}
+
+.book p {
+  font-size: 1.2rem;
+  color: #5a1f3f;
+  min-height: 1.6em;
+}
+
+/* 🎛 BUTTONS */
+.controls {
+  margin-top: 30px;
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+}
+
+button {
+  padding: 14px 36px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+#yes {
+  background: white;
+  color: #c2185b;
+}
+
+#yes:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 25px rgba(255,180,220,.7);
+}
+
+#no {
+  background: #ffd1dc;
+  color: #6b1f3b;
+  position: relative;
+}
+
+/* 💕 FLOATING STICKERS */
+.stickers span {
+  position: absolute;
+  font-size: 26px;
+  animation: floaty 6s ease-in-out infinite;
+}
+
+.stickers span:nth-child(1) { top: -20px; left: -10px; }
+.stickers span:nth-child(2) { top: -25px; right: 5px; animation-delay: 1s; }
+.stickers span:nth-child(3) { bottom: -20px; right: -10px; animation-delay: 2s; }
+
+@keyframes floaty {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+/* 🐶 DOG */
+.dog {
+  position: fixed;
+  bottom: -200px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  font-size: 90px;
+  opacity: 0;
+  z-index: 3;
+  filter: drop-shadow(0 12px 25px rgba(255, 170, 210, 0.45));
+}
+
+.dog span {
+  display: block;
+  background: white;
+  color: #d63384;
+  padding: 8px 16px;
+  border-radius: 18px;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+/* entrance + idle */
+.dog.show {
+  opacity: 1;
+  bottom: 40px;
+  animation:
+    puppyPop 1.2s cubic-bezier(.68,-0.6,.32,1.6),
+    puppyIdle 3.5s ease-in-out infinite 1.2s;
+}
+
+@keyframes puppyPop {
+  from {
+    bottom: -200px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+  }
+  to {
+    bottom: 40px;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes puppyIdle {
+  0%,100% {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.04) rotate(-1deg);
+  }
+}
