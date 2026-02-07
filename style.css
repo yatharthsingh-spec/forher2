@@ -150,4 +150,13 @@ button {
   50% { transform: translateX(-50%) scale(1.04) rotate(-1deg); }
 }
 
+body.celebrate {
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%,100% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+}
+
 
