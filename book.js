@@ -4,47 +4,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const dog = document.getElementById("dog");
   const text = document.getElementById("story");
 
-  const lines = [
-    "Hey you 💕",
-    "Okay so… don’t panic.",
-    "But you’re really special.",
-    "And I was wondering…",
+  const story = [
+    "Hey you 💗",
+    "I’ve been thinking…",
+    "And the universe kind of agrees.",
+    "So I wanted to ask you…",
     "Will you be my Valentine? 🌷"
   ];
 
   let index = 0;
 
-  function typeLine(line, callback) {
+  function typeLine(line, done) {
     let i = 0;
     text.textContent = "";
-    const interval = setInterval(() => {
+    const t = setInterval(() => {
       text.textContent += line[i++];
       if (i === line.length) {
-        clearInterval(interval);
-        if (callback) setTimeout(callback, 900);
+        clearInterval(t);
+        if (done) setTimeout(done, 900);
       }
     }, 45);
   }
 
-  function playStory() {
-    if (index < lines.length) {
-      typeLine(lines[index], () => {
+  function play() {
+    if (index < story.length) {
+      typeLine(story[index], () => {
         index++;
-        playStory();
+        play();
       });
     }
   }
 
-  playStory();
+  play();
 
   yes.addEventListener("click", () => {
-    text.textContent = "I KNEW IT 😭💖";
+    text.textContent = "You just made my universe brighter 💖";
     dog.classList.add("show");
 
-    // magical sky entry
     dog.style.bottom = "auto";
     dog.style.top = "120px";
-    dog.style.left = "20%";
+    dog.style.left = "18%";
 
     setTimeout(() => {
       dog.style.top = "auto";
@@ -52,16 +51,15 @@ document.addEventListener("DOMContentLoaded", () => {
       dog.style.left = "50%";
     }, 900);
 
-    for (let i = 0; i < 10; i++) {
-      if (window.spawnShootingStar) window.spawnShootingStar();
-    }
+    if (window.startCelebration) window.startCelebration();
   });
 
   no.addEventListener("mouseenter", () => {
-    const x = Math.random() * 240 - 120;
-    const y = Math.random() * 120 - 60;
+    const x = Math.random() * 260 - 130;
+    const y = Math.random() * 140 - 70;
     no.style.transform =
       `translate(${x}px, ${y}px) rotate(${Math.random()*20-10}deg)`;
+
+    if (window.spawnShootingStar) window.spawnShootingStar();
   });
 });
-
