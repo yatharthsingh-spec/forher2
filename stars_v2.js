@@ -10,107 +10,61 @@ document.addEventListener("DOMContentLoaded", () => {
   resize();
   window.addEventListener("resize", resize);
 
-  /* ⭐ ROTATING STARS */
-  const stars = Array.from({ length: 900 }, () => ({
-    baseR: Math.random() * Math.max(w, h),
-    r: 0,
+  /* ⭐ STARS (OPTIMIZED) */
+  const stars = Array.from({ length: 600 }, () => ({
+    r: Math.random() * Math.max(w, h),
     a: Math.random() * Math.PI * 2,
-    s: 0.00005 + Math.random() * 0.00015,
-    size: Math.random() * 1.6 + 0.4,
-    tw: Math.random() * Math.PI * 2,
-    hue: 260 + Math.random() * 60
+    s: 0.00008 + Math.random() * 0.00012,
+    size: Math.random() * 1.4 + 0.4,
+    hue: 260 + Math.random() * 50
   }));
 
-  /* ☁️ PLUSH CLOUDS */
-  const clouds = Array.from({ length: 6 }, () => ({
+  /* ☁️ CLOUDS (LOW FPS UPDATE) */
+  const clouds = Array.from({ length: 4 }, () => ({
     x: Math.random() * w,
     y: Math.random() * h * 0.6,
-    r: 180 + Math.random() * 120,
-    dx: 0.06 + Math.random() * 0.1,
-    o: 0.05 + Math.random() * 0.06
+    r: 220 + Math.random() * 140,
+    dx: 0.04 + Math.random() * 0.06,
+    o: 0.06
   }));
 
-  /* 🌙 MOON */
-  const moon = {
-    y: h + 160,
-    r: 90,
-    speed: 0.05,
-    x: () => w * 0.18
-  };
-
-  /* 🪐 PLANET */
-  const planet = {
-    a: Math.random() * Math.PI * 2,
-    orbit: 280,
-    size: 42,
-    speed: 0.0001
-  };
-
-  /* 🌠 SHOOTING STARS */
-  const shooters = [];
-  window.spawnShootingStar = () => {
-    shooters.push({
-      x: Math.random() * w,
-      y: Math.random() * h * 0.4,
-      vx: 12,
-      vy: 6,
-      life: 60
-    });
-  };
-
-  /* 💖 CELEBRATION STATE */
-  let celebrate = false;
-  let pulse = 0;
-
-  /* 💖 HEART CONFETTI */
+  /* 💖 HEART PARTICLES (CAPPED) */
   const hearts = [];
+  const MAX_HEARTS = 120;
 
-  function heartBurst() {
-    for (let i = 0; i < 140; i++) {
-      const a = Math.random() * Math.PI * 2;
-      hearts.push({
-        x: w / 2,
-        y: h / 2,
-        vx: Math.cos(a) * (2 + Math.random() * 4),
-        vy: Math.sin(a) * (2 + Math.random() * 4),
-        life: 120,
-        size: 12 + Math.random() * 10
-      });
-    }
-  }
+  function spawnHeart(x, y, burst = false) {
+    if (hearts.length > MAX_HEARTS) return;
 
-  function rainHeart() {
     hearts.push({
-      x: Math.random() * w,
-      y: -20,
-      vx: Math.random() * 0.6 - 0.3,
-      vy: 0.8 + Math.random() * 1.2,
-      life: 260,
-      size: 10 + Math.random() * 8
+      x,
+      y,
+      vx: burst ? (Math.random() - 0.5) * 4 : (Math.random() - 0.5),
+      vy: burst ? (Math.random() - 0.5) * 4 : 0.8 + Math.random(),
+      life: 180,
+      size: 2.5 + Math.random() * 2
     });
   }
 
-  /* 💗 HEART CONSTELLATION */
-  const heartPoints = Array.from({ length: 60 }, (_, i) => {
-    const t = (i / 60) * Math.PI * 2;
-    return {
-      x: 16 * Math.pow(Math.sin(t), 3),
-      y:
-        -(13 * Math.cos(t)
-          - 5 * Math.cos(2 * t)
-          - 2 * Math.cos(3 * t)
-          - Math.cos(4 * t))
-    };
-  });
+  let celebrate = false;
+  let frame = 0;
 
   window.startCelebration = () => {
-    if (celebrate) return;
     celebrate = true;
-    heartBurst();
-    setInterval(rainHeart, 140);
+    for (let i = 0; i < 60; i++) spawnHeart(w / 2, h / 2, true);
   };
 
-  /* 🎨 DRAW FUNCTIONS */
+  function drawStars() {
+    stars.forEach(s => {
+      s.a += s.s * 16;
+      const x = w / 2 + Math.cos(s.a) * s.r;
+      const y = h / 2 + Math.sin(s.a) * s.r;
+
+      ctx.beginPath();
+      ctx.arc(x, y, s.size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${s.hue},85%,88%,${celebrate ? 0.95 : 0.7})`;
+      ctx.fill();
+    });
+  }
 
   function drawClouds() {
     clouds.forEach(c => {
@@ -128,111 +82,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function drawStars() {
-    pulse += celebrate ? 0.04 : 0.01;
-
-    stars.forEach(s => {
-      s.a += s.s * 16;
-      s.tw += 0.02;
-      s.r = s.baseR * (1 + Math.sin(s.tw) * 0.02);
-
-      const x = w / 2 + Math.cos(s.a) * s.r;
-      const y = h / 2 + Math.sin(s.a) * s.r;
-
-      const glow = celebrate
-        ? 0.85 + Math.sin(pulse) * 0.2
-        : 0.7;
-
-      ctx.beginPath();
-      ctx.arc(x, y, s.size, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${s.hue},90%,88%,${glow})`;
-      ctx.fill();
-    });
-  }
-
-  function drawHeartConstellation() {
-    if (!celebrate) return;
-
-    const scale = 6 + Math.sin(pulse) * 0.4;
-    const cx = w * 0.5;
-    const cy = h * 0.45;
-
-    heartPoints.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(
-        cx + p.x * scale,
-        cy + p.y * scale,
-        1.8,
-        0,
-        Math.PI * 2
-      );
-      ctx.fillStyle = "rgba(255,180,220,0.9)";
-      ctx.fill();
-    });
-  }
-
   function drawHearts() {
     hearts.forEach(hh => {
       hh.x += hh.vx;
       hh.y += hh.vy;
       hh.life--;
 
-      ctx.font = `${hh.size}px serif`;
-      ctx.fillText("💖", hh.x, hh.y);
+      ctx.beginPath();
+      ctx.arc(hh.x, hh.y, hh.size, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,170,210,0.85)";
+      ctx.fill();
     });
 
     while (hearts.length && hearts[0].life <= 0) hearts.shift();
   }
 
-  function drawMoonPlanet() {
-    if (moon.y > h - 220) moon.y -= moon.speed;
-
-    ctx.beginPath();
-    ctx.arc(moon.x(), moon.y, moon.r, 0, Math.PI * 2);
-    ctx.fillStyle = "#f2f2ff";
-    ctx.shadowBlur = 45;
-    ctx.shadowColor = "rgba(220,220,255,0.6)";
-    ctx.fill();
-
-    planet.a += planet.speed * 16;
-    ctx.beginPath();
-    ctx.arc(
-      w * 0.75 + Math.cos(planet.a) * planet.orbit,
-      h * 0.3 + Math.sin(planet.a) * planet.orbit,
-      planet.size,
-      0,
-      Math.PI * 2
-    );
-    ctx.fillStyle = "#ffb7d5";
-    ctx.fill();
-  }
-
-  function drawShooters() {
-    shooters.forEach(s => {
-      s.x += s.vx;
-      s.y += s.vy;
-      s.life--;
-
-      ctx.beginPath();
-      ctx.moveTo(s.x, s.y);
-      ctx.lineTo(s.x - 36, s.y - 18);
-      ctx.strokeStyle = "rgba(255,255,255,0.8)";
-      ctx.stroke();
-    });
-
-    while (shooters.length && shooters[0].life <= 0) shooters.shift();
-  }
-
   function animate() {
+    frame++;
+
     ctx.fillStyle = "#050510";
     ctx.fillRect(0, 0, w, h);
 
-    drawClouds();
     drawStars();
-    drawHeartConstellation();
-    drawMoonPlanet();
+
+    // clouds every 2nd frame (BIG perf win)
+    if (frame % 2 === 0) drawClouds();
+
     drawHearts();
-    drawShooters();
+
+    // gentle heart rain during celebration
+    if (celebrate && frame % 10 === 0) {
+      spawnHeart(Math.random() * w, -10);
+    }
 
     requestAnimationFrame(animate);
   }
