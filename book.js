@@ -38,21 +38,23 @@ document.addEventListener("DOMContentLoaded", () => {
   play();
 
   yes.addEventListener("click", () => {
-    text.textContent = "You just made my universe brighter 💖";
-    dog.classList.add("show");
+  text.textContent = "I love you 💖";
+  dog.classList.add("show");
 
-    dog.style.bottom = "auto";
-    dog.style.top = "120px";
-    dog.style.left = "18%";
+  // dramatic dog entry
+  dog.style.bottom = "auto";
+  dog.style.top = "120px";
+  dog.style.left = "20%";
 
-    setTimeout(() => {
-      dog.style.top = "auto";
-      dog.style.bottom = "40px";
-      dog.style.left = "50%";
-    }, 900);
+  setTimeout(() => {
+    dog.style.top = "auto";
+    dog.style.bottom = "40px";
+    dog.style.left = "50%";
+  }, 900);
 
-    if (window.startCelebration) window.startCelebration();
-  });
+  if (window.startCelebration) window.startCelebration();
+});
+
 
   no.addEventListener("mouseenter", () => {
     const x = Math.random() * 260 - 130;
@@ -63,3 +65,4 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.spawnShootingStar) window.spawnShootingStar();
   });
 });
+
