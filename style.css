@@ -22,7 +22,11 @@ body {
 /* 🌌 CANVAS */
 canvas {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
   z-index: 0;
 }
 
@@ -145,4 +149,5 @@ button {
   0%,100% { transform: translateX(-50%) scale(1) rotate(0deg); }
   50% { transform: translateX(-50%) scale(1.04) rotate(-1deg); }
 }
+
 
